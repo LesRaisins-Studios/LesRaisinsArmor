@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.xjqsh.lrarmor.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "LesRaisinsArmor.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

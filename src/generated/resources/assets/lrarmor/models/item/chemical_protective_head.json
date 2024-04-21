@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "lrarmor:items/chemical_protective_head"
+  }
+}
