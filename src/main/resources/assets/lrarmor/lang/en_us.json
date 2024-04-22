@@ -2,6 +2,8 @@
   "effect.lrarmor.tough": "Shock Absorbing",
   "effect.lrarmor.light_leg": "Leg Support",
   "effect.lrarmor.heavy_armor": "Heavy Armor",
+  "effect.lrarmor.rescue": "Emergency Rescue",
+  "effect.lrarmor.rescue_cooldown": "Rescue Cooldown",
   "itemGroup.lrarmor": "LesRaisins Armor",
   "item.lrarmor.armored_chemical_head": "ARMORED CHEMICAL-HELMET",
   "item.lrarmor.armored_chemical_chest": "ARMORED CHEMICAL-CHEST",

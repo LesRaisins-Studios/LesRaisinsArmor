@@ -39,7 +39,7 @@ public class LrArmorItem extends GeoArmorItem implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private final String suitIdf;
     private boolean hideArm = true;
-    private @Nullable Supplier<Effect> suitEffect;
+    private final @Nullable Supplier<Effect> suitEffect;
     public LrArmorItem(String suitIdf, ArmorMaterial armorMaterial, EquipmentSlotType slot, Properties properties, @Nullable Supplier<Effect> suitEffect) {
         super(armorMaterial, slot, properties);
         this.suitIdf = suitIdf;

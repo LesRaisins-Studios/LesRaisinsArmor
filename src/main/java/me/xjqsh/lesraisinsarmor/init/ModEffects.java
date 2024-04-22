@@ -19,16 +19,18 @@ public class ModEffects {
                     15, Operation.ADDITION)
             .addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE,"0BCE518E-9D05-CB4A-C435-C68BEEE57650",
                     0.25d, Operation.ADDITION);
-
     public static final Effect LIGHT_LEG_EFFECT = new SuitEffect(EffectType.BENEFICIAL,0x000000, "scout")
             .addAttributeModifier(Attributes.MOVEMENT_SPEED,"FC303D2A-7C7F-FFAB-2B4E-A5EF09BB2AF1",
                     0.025, Operation.ADDITION);
     public static final Effect HEAVY_EFFECT = new SuitEffect(EffectType.BENEFICIAL,0x000000, "defender")
             .addAttributeModifier(Attributes.MOVEMENT_SPEED,"37DAE46A-CB52-2E2C-71FC-4AE7348B0B8D",
                     -0.02, Operation.ADDITION);
+    public static final Effect RESCUE_EFFECT = new SuitEffect(EffectType.BENEFICIAL,0x000000, "medical");
     public static final DeferredRegister<Effect> REGISTER = DeferredRegister.create(ForgeRegistries.POTIONS, LesRaisinsArmor.MOD_ID);
     public static final RegistryObject<Effect> TOUGH = REGISTER.register("tough",()-> TOUGH_EFFECT);
     public static final RegistryObject<Effect> LIGHT_LEG = REGISTER.register("light_leg",()-> LIGHT_LEG_EFFECT);
     public static final RegistryObject<Effect> HEAVY_ARMOR = REGISTER.register("heavy_armor",()-> HEAVY_EFFECT);
-
+    public static final RegistryObject<Effect> RESCUE = REGISTER.register("rescue",()-> RESCUE_EFFECT);
+    public static final RegistryObject<Effect> RESCUE_COOLDOWN = REGISTER.register("rescue_cooldown",()->
+            new Effect(EffectType.HARMFUL,0x000000){});
 }

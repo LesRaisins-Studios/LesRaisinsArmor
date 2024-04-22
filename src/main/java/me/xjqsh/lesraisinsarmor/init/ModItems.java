@@ -33,6 +33,7 @@ public class ModItems {
         registerInBatch("attacker", ModEffects.TOUGH);
         registerInBatch("chemical_protective");
         registerInBatch("defender", ModEffects.HEAVY_ARMOR);
+        registerInBatch("medical", ModEffects.RESCUE);
         registerInBatch("scout", ModEffects.LIGHT_LEG);
         registerInBatch("sniper");
     }

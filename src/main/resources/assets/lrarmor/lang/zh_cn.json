@@ -1,7 +1,9 @@
 {
-  "effect.lrarmor.light_leg": "轻量腿部支撑",
-  "effect.lrarmor.tough": "特制减震夹层",
   "effect.lrarmor.heavy_armor": "超重型装甲",
+  "effect.lrarmor.light_leg": "轻量腿部支撑",
+  "effect.lrarmor.rescue": "紧急自救",
+  "effect.lrarmor.rescue_cooldown": "紧急自救[冷却中]",
+  "effect.lrarmor.tough": "特制减震夹层",
   "item.lrarmor.armored_chemical_chest": "装甲防化服-胸甲",
   "item.lrarmor.armored_chemical_feet": "装甲防化服-靴子",
   "item.lrarmor.armored_chemical_head": "装甲防化服-头盔",
