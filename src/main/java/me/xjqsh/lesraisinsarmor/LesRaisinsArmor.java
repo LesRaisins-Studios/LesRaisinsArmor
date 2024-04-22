@@ -1,6 +1,7 @@
 package me.xjqsh.lesraisinsarmor;
 
 import me.xjqsh.lesraisinsarmor.client.renderer.BedrockArmorRenderer;
+import me.xjqsh.lesraisinsarmor.init.ModEffects;
 import me.xjqsh.lesraisinsarmor.init.ModItems;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -22,6 +23,7 @@ public class LesRaisinsArmor {
         bus.addListener(this::onClientSetup);
 
         ModItems.REGISTER.register(bus);
+        ModEffects.REGISTER.register(bus);
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {

@@ -53,6 +53,7 @@ minecraft {
         }
 
         server {
+            workingDirectory project.file('run-server')
             args '--nogui'
         }
 
