@@ -114,7 +114,7 @@
 				{
 					"name": "armorRightBoot",
 					"parent": "bone",
-					"pivot": [0, 0, 0],
+					"pivot": [-1.9, 12, 0],
 					"cubes": [
 						{
 							"origin": [-3.65, 0, -3],
@@ -241,7 +241,7 @@
 				{
 					"name": "armorLeftBoot",
 					"parent": "bone",
-					"pivot": [0, 0, 0.5],
+					"pivot": [1.9, 12, 0],
 					"cubes": [
 						{
 							"origin": [-0.35, 0, -2.25],

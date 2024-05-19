@@ -1,6 +1,7 @@
 package me.xjqsh.lesraisinsarmor.init;
 
 import me.xjqsh.lesraisinsarmor.LesRaisinsArmor;
+import me.xjqsh.lesraisinsarmor.armor.LrArmorMaterial;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorMaterial;
@@ -28,6 +29,8 @@ public class ModItems {
     public static final ResourceLocation icon = new ResourceLocation(LesRaisinsArmor.MOD_ID, "chemical_protective_chest");
     public static final EquipmentSlotType[] armorSlots = new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
 
+
+
     static {
         registerInBatch("armored_chemical");
         registerInBatch("attacker", ModEffects.TOUGH);
@@ -42,7 +45,7 @@ public class ModItems {
         for (EquipmentSlotType slotType : armorSlots){
             String slotName = slotType.getName();
             REGISTER.register(name + "_" + slotName,
-                    ()->new LrArmorItem(name,ArmorMaterial.LEATHER, slotType,
+                    ()->new LrArmorItem(name, LrArmorMaterial.getByName(name), slotType,
                             (new Item.Properties()).tab(LR_ARMOR),null));
         }
     }
@@ -51,7 +54,7 @@ public class ModItems {
         for (EquipmentSlotType slotType : armorSlots){
             String slotName = slotType.getName();
             REGISTER.register(name + "_" + slotName,
-                    ()->new LrArmorItem(name,ArmorMaterial.LEATHER, slotType,
+                    ()->new LrArmorItem(name,LrArmorMaterial.getByName(name), slotType,
                             (new Item.Properties()).tab(LR_ARMOR),supplier));
         }
     }

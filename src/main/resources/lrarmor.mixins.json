@@ -3,11 +3,10 @@
   "minVersion": "0.8",
   "package": "me.xjqsh.lesraisinsarmor.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "LesRaisinsArmor.refmap.json",
-  "mixins": [
-    "EffectInstanceMixin"
-  ],
+  "refmap": "lrarmor.refmap.json",
+  "mixins": [],
   "client": [
+    "EffectInstanceMixin"
   ],
   "injectors": {
     "defaultRequire": 1

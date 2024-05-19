@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
@@ -40,7 +41,7 @@ public class LrArmorItem extends GeoArmorItem implements IAnimatable {
     private final String suitIdf;
     private boolean hideArm = true;
     private final @Nullable Supplier<Effect> suitEffect;
-    public LrArmorItem(String suitIdf, ArmorMaterial armorMaterial, EquipmentSlotType slot, Properties properties, @Nullable Supplier<Effect> suitEffect) {
+    public LrArmorItem(String suitIdf, IArmorMaterial armorMaterial, EquipmentSlotType slot, Properties properties, @Nullable Supplier<Effect> suitEffect) {
         super(armorMaterial, slot, properties);
         this.suitIdf = suitIdf;
         this.suitEffect = suitEffect;
