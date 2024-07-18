@@ -316,7 +316,7 @@
 				{
 					"name": "armorRightArm",
 					"parent": "bone",
-					"pivot": [-5.2, 22, 0],
+					"pivot": [-5, 22, 0],
 					"cubes": [
 						{
 							"origin": [-8.535, 17.64, -2.205],
@@ -470,7 +470,7 @@
 				{
 					"name": "armorLeftArm",
 					"parent": "bone",
-					"pivot": [-5.2, 22, 0],
+					"pivot": [5, 22, 0],
 					"cubes": [
 						{
 							"origin": [3.88, 17.64, -2.205],
