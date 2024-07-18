@@ -1,21 +1,13 @@
 package me.xjqsh.lesraisinsarmor.client.renderer;
 
+import me.xjqsh.lesraisinsarmor.LesRaisinsArmor;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.DefaultedItemGeoModel;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class BedrockArmorRenderer extends GeoArmorRenderer<LrArmorItem> {
-    	public BedrockArmorRenderer() {
-    		super(new BedrockArmorModel());
-
-    		this.headBone = "armorHead";
-    		this.bodyBone = "armorBody";
-    		this.leftArmBone = "armorLeftArm";
-    		this.rightArmBone = "armorRightArm";
-    		this.leftLegBone = "armorLeftLeg";
-			this.rightLegBone = "armorRightLeg";
-    		this.leftBootBone = "armorLeftBoot";
-    		this.rightBootBone = "armorRightBoot";
-
-			leftArm.visible = false;
-    	}
-    }
+	public BedrockArmorRenderer(String suit) {
+		super(new DefaultedItemGeoModel<>(new ResourceLocation(LesRaisinsArmor.MOD_ID, "armor/"+suit)));
+	}
+}

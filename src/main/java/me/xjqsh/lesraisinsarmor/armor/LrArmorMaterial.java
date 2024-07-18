@@ -1,20 +1,23 @@
 package me.xjqsh.lesraisinsarmor.armor;
 
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.LazyValue;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public enum LrArmorMaterial implements IArmorMaterial {
+public enum LrArmorMaterial implements ArmorMaterial {
     ARMORED_CHEMICAL("armored_chemical", 50, new int[]{1, 2, 3, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER)),
     ATTACKER("attacker", 50, new int[]{2, 5, 6, 2}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER)),
     CHEMICAL_PROTECTIVE("chemical_protective", 50, new int[]{1, 2, 3, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER)),
@@ -41,7 +44,7 @@ public enum LrArmorMaterial implements IArmorMaterial {
     private final SoundEvent sound;
     private final float toughness;
     private final float knockbackResistance;
-    private final LazyValue<Ingredient> repairIngredient;
+    private final LazyLoadedValue<Ingredient> repairIngredient;
 
     LrArmorMaterial(String name, int durabilityMultiplier, int[] slotProtections, int enchantmentValue, SoundEvent equipSound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredientSupplier) {
         this.name = name;
@@ -51,38 +54,45 @@ public enum LrArmorMaterial implements IArmorMaterial {
         this.sound = equipSound;
         this.toughness = toughness;
         this.knockbackResistance = knockbackResistance;
-        this.repairIngredient = new LazyValue<>(repairIngredientSupplier);
+        this.repairIngredient = new LazyLoadedValue<>(repairIngredientSupplier);
     }
 
-    public int getDurabilityForSlot(EquipmentSlotType p_200896_1_) {
-        return HEALTH_PER_SLOT[p_200896_1_.getIndex()] * this.durabilityMultiplier;
+    @Override
+    public int getDurabilityForType(ArmorItem.Type type) {
+        return HEALTH_PER_SLOT[type.ordinal()] * this.durabilityMultiplier;
     }
 
-    public int getDefenseForSlot(EquipmentSlotType p_200902_1_) {
-        return this.slotProtections[p_200902_1_.getIndex()];
+    @Override
+    public int getDefenseForType(ArmorItem.Type type) {
+        return this.slotProtections[type.ordinal()];
     }
 
+    @Override
     public int getEnchantmentValue() {
         return this.enchantmentValue;
     }
 
-    public SoundEvent getEquipSound() {
+    @Override
+    public @NotNull SoundEvent getEquipSound() {
         return this.sound;
     }
 
-    public Ingredient getRepairIngredient() {
+    @Override
+    public @NotNull Ingredient getRepairIngredient() {
         return this.repairIngredient.get();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getName() {
+    public @NotNull String getName() {
         return this.name;
     }
 
+    @Override
     public float getToughness() {
         return this.toughness;
     }
 
+    @Override
     public float getKnockbackResistance() {
         return this.knockbackResistance;
     }

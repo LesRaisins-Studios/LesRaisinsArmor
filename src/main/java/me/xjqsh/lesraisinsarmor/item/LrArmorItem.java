@@ -1,47 +1,49 @@
 package me.xjqsh.lesraisinsarmor.item;
 
 import com.google.common.collect.Multimap;
-import me.xjqsh.lesraisinsarmor.init.ModItems;
+import me.xjqsh.lesraisinsarmor.client.renderer.BedrockArmorRenderer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.item.GeoArmorItem;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.constant.DefaultAnimations;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class LrArmorItem extends GeoArmorItem implements IAnimatable {
-    protected static final AnimationBuilder IDLE_ANIM = new AnimationBuilder().addAnimation("misc.idle");
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+
+public class LrArmorItem extends ArmorItem implements GeoItem {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private final String suitIdf;
     private boolean hideArm = true;
-    private final @Nullable Supplier<Effect> suitEffect;
-    public LrArmorItem(String suitIdf, IArmorMaterial armorMaterial, EquipmentSlotType slot, Properties properties, @Nullable Supplier<Effect> suitEffect) {
+    private final @Nullable Supplier<MobEffect> suitEffect;
+
+    public LrArmorItem(String suitIdf, ArmorMaterial armorMaterial, ArmorItem.Type slot, Item.Properties properties, @Nullable Supplier<MobEffect> suitEffect) {
         super(armorMaterial, slot, properties);
         this.suitIdf = suitIdf;
         this.suitEffect = suitEffect;
@@ -57,51 +59,64 @@ public class LrArmorItem extends GeoArmorItem implements IAnimatable {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-        return super.getAttributeModifiers(slot, stack);
-    }
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            private GeoArmorRenderer<?> renderer;
 
-    private <T extends LrArmorItem> PlayState idleAnimController(final AnimationEvent<T> event) {
-        event.getController().setAnimation(IDLE_ANIM);
-        return PlayState.CONTINUE;
+            @Override
+            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+                if (this.renderer == null)
+                    this.renderer = new BedrockArmorRenderer(getSuitIdf());
+
+                this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
+
+                return this.renderer;
+            }
+        });
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "Idle Controller",
-                0, this::idleAnimController));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, 20, state -> {
+            state.setAnimation(DefaultAnimations.IDLE);
+            return PlayState.CONTINUE;
+        }));
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 
+    @Override
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
+        return super.getDefaultAttributeModifiers(pEquipmentSlot);
+    }
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag tooltipFlag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag tooltipFlag) {
         if (Minecraft.getInstance().player != null) {
-            PlayerEntity player = Minecraft.getInstance().player;
-            ITextComponent title = new TranslationTextComponent("tooltip.lramrmor.suit",
-                    new TranslationTextComponent("suit.lrarmor." + this.suitIdf),
-                    new StringTextComponent(String.format("(%d/4)",getSuitCount(player, stack)))
-            ).withStyle(TextFormatting.GRAY);
+            Player player = Minecraft.getInstance().player;
+            Component title = Component.translatable("tooltip.lramrmor.suit",
+                    Component.translatable("suit.lrarmor." + this.suitIdf),
+                    Component.literal(String.format("(%d/4)",getSuitCount(player, stack)))
+            ).withStyle(ChatFormatting.GRAY);
             list.add(title);
 
             boolean flag = true;
             LrArmorItem item = (LrArmorItem) stack.getItem();
-            ItemStack equipItem = player.getItemBySlot(item.getSlot());
+            ItemStack equipItem = player.getItemBySlot(item.getEquipmentSlot());
             if(!stack.equals(equipItem)){
                 flag = false;
             }
 
-            for(EquipmentSlotType slot : ModItems.armorSlots){
-                TranslationTextComponent part = new TranslationTextComponent("item.lrarmor." + this.suitIdf + "_" + slot.getName());
+            for(ArmorItem.Type slot : ArmorItem.Type.values()){
+                MutableComponent part = Component.translatable("item.lrarmor." + this.suitIdf + "_" + slot.getName());
 
                 if(flag && isPartEquipped(player, slot)) {
-                    part.withStyle(TextFormatting.GREEN);
+                    part.withStyle(ChatFormatting.GREEN);
                 }else {
-                    part.withStyle(TextFormatting.GRAY);
+                    part.withStyle(ChatFormatting.GRAY);
                 }
 
                 list.add(part);
@@ -109,29 +124,32 @@ public class LrArmorItem extends GeoArmorItem implements IAnimatable {
 
         }
     }
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
+    {
+        return "lrarmor:textures/item/armor/" + this.suitIdf + ".png";
+    }
 
-    public void applyEffect(PlayerEntity player){
+    public void applyEffect(Player player){
         if(suitEffect == null) return;
-        Effect effect = suitEffect.get();
+        MobEffect effect = suitEffect.get();
         if(effect != null){
-            player.addEffect(new EffectInstance(effect, 250));
+            player.addEffect(new MobEffectInstance(effect, 250));
         }
     }
 
-    public boolean isPartEquipped(PlayerEntity player, EquipmentSlotType slot){
-        ItemStack equipItem = player.getItemBySlot(slot);
-        if(equipItem.getItem() instanceof LrArmorItem){
-            LrArmorItem item = (LrArmorItem) equipItem.getItem();
+    public boolean isPartEquipped(Player player, ArmorItem.Type slot){
+        ItemStack equipItem = player.getItemBySlot(slot.getSlot());
+        if(equipItem.getItem() instanceof LrArmorItem item){
             return item.getSuitIdf().equals(this.suitIdf);
         }
         return false;
     }
 
-    public int getSuitCount(PlayerEntity player, @Nonnull ItemStack stack){
-        if(!(stack.getItem() instanceof LrArmorItem)) return 0;
+    public int getSuitCount(Player player, @Nonnull ItemStack stack){
+        if(!(stack.getItem() instanceof LrArmorItem item)) return 0;
 
-        LrArmorItem item = (LrArmorItem) stack.getItem();
-        ItemStack equipItem = player.getItemBySlot(item.getSlot());
+        ItemStack equipItem = player.getItemBySlot(item.getEquipmentSlot());
         if(!stack.equals(equipItem)){
             return 0;
         }
@@ -139,17 +157,16 @@ public class LrArmorItem extends GeoArmorItem implements IAnimatable {
         return getSuitCount(player);
     }
 
-    public int getSuitCount(PlayerEntity player){
+    public int getSuitCount(Player player){
         return getSuitCount(player, this.suitIdf);
     }
 
-    public static int getSuitCount(PlayerEntity player, String suitIdf){
+    public static int getSuitCount(Player player, String suitIdf){
         int cnt = 0;
 
-        for(EquipmentSlotType slot : ModItems.armorSlots){
-            ItemStack stack1 = player.getItemBySlot(slot);
-            if(stack1.getItem() instanceof LrArmorItem){
-                LrArmorItem item1 = (LrArmorItem) stack1.getItem();
+        for(ArmorItem.Type slot : ArmorItem.Type.values()){
+            ItemStack stack1 = player.getItemBySlot(slot.getSlot());
+            if(stack1.getItem() instanceof LrArmorItem item1){
                 if(item1.getSuitIdf().equals(suitIdf)){
                     cnt++;
                 }

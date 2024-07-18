@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "me.xjqsh.lesraisinsarmor.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "lrarmor.refmap.json",
   "mixins": [],
   "client": [
