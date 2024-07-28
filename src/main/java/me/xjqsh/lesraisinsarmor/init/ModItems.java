@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 public class ModItems {
     public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, LesRaisinsArmor.MOD_ID);
 
-
     static {
         registerInBatch("armored_chemical");
         registerInBatch("attacker", ModEffects.TOUGH);
@@ -23,6 +22,22 @@ public class ModItems {
         registerInBatch("medical", ModEffects.RESCUE);
         registerInBatch("scout", ModEffects.LIGHT_LEG);
         registerInBatch("sniper");
+        registerInBatch("dea_armed");
+        registerInBatch("dea");
+        registerInBatch("atf", LrArmorMaterial.DEFAULT);
+        registerInBatch("atf_vest", LrArmorMaterial.DEFAULT);
+        registerInBatch("irs", LrArmorMaterial.DEFAULT);
+        registerInBatch("fbi", LrArmorMaterial.DEFAULT);
+        registerInBatch("fbi_armed", LrArmorMaterial.DEFAULT);
+    }
+
+    public static void registerInBatch(String name, LrArmorMaterial material){
+        for (ArmorItem.Type slotType : ArmorItem.Type.values()){
+            String slotName = slotType.getName();
+            REGISTER.register(name + "_" + slotName,
+                    ()->new LrArmorItem(name, material, slotType,
+                            (new Item.Properties()),null));
+        }
     }
 
     public static void registerInBatch(String name){

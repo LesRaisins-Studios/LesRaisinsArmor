@@ -1,5 +1,6 @@
 package me.xjqsh.lesraisinsarmor.common;
 
+import me.xjqsh.lesraisinsarmor.config.CommonConfig;
 import me.xjqsh.lesraisinsarmor.init.ModEffects;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,6 +19,8 @@ import net.minecraftforge.fml.common.Mod;
 public class SuitHandler {
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if(!CommonConfig.enableArmorSetEffect.get()) return;
+
         if(event.player.level().isClientSide()) return;
         if(event.player.tickCount % 10 != 0) return;
 

@@ -1,7 +1,9 @@
 package me.xjqsh.lesraisinsarmor.item;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import me.xjqsh.lesraisinsarmor.client.renderer.BedrockArmorRenderer;
+import me.xjqsh.lesraisinsarmor.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -40,7 +42,6 @@ import java.util.function.Supplier;
 public class LrArmorItem extends ArmorItem implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private final String suitIdf;
-    private boolean hideArm = true;
     private final @Nullable Supplier<MobEffect> suitEffect;
 
     public LrArmorItem(String suitIdf, ArmorMaterial armorMaterial, ArmorItem.Type slot, Item.Properties properties, @Nullable Supplier<MobEffect> suitEffect) {
@@ -51,11 +52,21 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     public String getSuitIdf() {
         return suitIdf;
     }
-    public boolean isHideArm(){
-        return this.hideArm;
+
+    @Override
+    public int getDefense() {
+        if(CommonConfig.enableArmorAttribute.get()){
+            return super.getDefense();
+        }
+        return 0;
     }
-    public void setHideArm(boolean hideArm) {
-        this.hideArm = hideArm;
+
+    @Override
+    public float getToughness() {
+        if(CommonConfig.enableArmorAttribute.get()){
+            return super.getToughness();
+        }
+        return 0;
     }
 
     @Override
@@ -89,9 +100,10 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        return super.getDefaultAttributeModifiers(pEquipmentSlot);
+    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
+        return CommonConfig.enableArmorAttribute.get() ? super.getDefaultAttributeModifiers(pEquipmentSlot) : ImmutableMultimap.of();
     }
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag tooltipFlag) {
@@ -125,8 +137,7 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
         }
     }
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
-    {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return "lrarmor:textures/item/armor/" + this.suitIdf + ".png";
     }
 
