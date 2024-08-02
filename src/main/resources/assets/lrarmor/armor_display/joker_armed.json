@@ -9,5 +9,11 @@
 			"left_arm", "left_sleeve",
 			"right_arm", "right_sleeve"
 		]
+	},
+	"leggings": {
+		"hideParts": [
+			"left_leg", "left_pants",
+			"right_leg", "right_pants"
+		]
 	}
 }

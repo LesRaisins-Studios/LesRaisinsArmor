@@ -1,4 +1,4 @@
-// 1.20.1	2024-07-28T22:39:12.0546416	Item Models: lrarmor
+// 1.20.1	2024-08-03T00:20:10.2069137	Item Models: lrarmor
 65d78cc3bc65f0461ed69d7f70f781af23b187ce assets/lrarmor/models/item/armored_chemical_boots.json
 dd2df720e07ab75e54cf40625365e38ff00f2ffa assets/lrarmor/models/item/armored_chemical_chestplate.json
 cb9826f939b10ecade410676b14e8210ee04de0e assets/lrarmor/models/item/armored_chemical_helmet.json
@@ -43,6 +43,12 @@ ada2481b6771605b1ac6cfea10c910d0c7cec1d0 assets/lrarmor/models/item/irs_boots.js
 ff75d0ff6a92d276d9199062dba56dad1c77ca72 assets/lrarmor/models/item/irs_chestplate.json
 5a924e82e4e40a076c3cf517e078eed6b7276f7d assets/lrarmor/models/item/irs_helmet.json
 38678b40726d375e78ab6ab7eccc13688582d322 assets/lrarmor/models/item/irs_leggings.json
+695310d95a19eadc204c9d94ccf2832bab52796c assets/lrarmor/models/item/joker_armed_chestplate.json
+661f2cd3a83297d517b267fcf0d13c35d83ea9f2 assets/lrarmor/models/item/joker_armed_helmet.json
+4080b5e2a13adfe8842ebcdc9cad454cc4a2304f assets/lrarmor/models/item/joker_boots.json
+8fee850586a6fda4c5adcefee0ea80b011ff2422 assets/lrarmor/models/item/joker_chestplate.json
+bef16c49063ae137df2e4fd33984f9ae3cf3ab02 assets/lrarmor/models/item/joker_helmet.json
+e2b0e585b9e5496a43de791eb8ac33d7954f9f9f assets/lrarmor/models/item/joker_leggings.json
 bf7258ee211cb1237e27053bed8e4206365631f7 assets/lrarmor/models/item/medical_boots.json
 95fb6b62fd7c94f93ec0aa0febdbb6d2330b0f5a assets/lrarmor/models/item/medical_chestplate.json
 fc4ce42b1745876c6f6cfd705f31ad3ccd054694 assets/lrarmor/models/item/medical_helmet.json

@@ -1,6 +1,7 @@
 package me.xjqsh.lesraisinsarmor.init;
 
 import me.xjqsh.lesraisinsarmor.LesRaisinsArmor;
+import me.xjqsh.lesraisinsarmor.armor.LrArmorMaterial;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.ArmorItem;
@@ -28,6 +29,14 @@ public class ModItems {
         registerInBatch("irs");
         registerInBatch("fbi");
         registerInBatch("fbi_armed");
+        registerSingle(ArmorItem.Type.HELMET, "joker_armed");
+        registerSingle(ArmorItem.Type.CHESTPLATE, "joker_armed");
+    }
+
+    public static void registerSingle(ArmorItem.Type slotType, String name){
+        String slotName = slotType.getName();
+        REGISTER.register(name + "_" + slotName, ()->new LrArmorItem(name, slotType,
+                new Item.Properties(),null));
     }
 
     public static void registerInBatch(String name){
