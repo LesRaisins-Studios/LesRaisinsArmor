@@ -1,4 +1,4 @@
-package me.xjqsh.lesraisinsarmor.common;
+package me.xjqsh.lesraisinsarmor.handler;
 
 import me.xjqsh.lesraisinsarmor.config.CommonConfig;
 import me.xjqsh.lesraisinsarmor.init.ModEffects;

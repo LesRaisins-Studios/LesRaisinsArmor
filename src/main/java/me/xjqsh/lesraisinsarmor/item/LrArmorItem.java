@@ -70,6 +70,11 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     }
 
     @Override
+    public int getMaxDamage(ItemStack stack) {
+        return 20;
+    }
+
+    @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private GeoArmorRenderer<?> renderer;
