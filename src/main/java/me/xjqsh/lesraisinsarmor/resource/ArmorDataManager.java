@@ -24,7 +24,7 @@ public class ArmorDataManager extends SimplePreparableReloadListener<Map<Resourc
     private static final Predicate<ResourceLocation> FILTER = (rl) -> rl.getPath().endsWith(".json");
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-            .registerTypeAdapter(ArmorPartData.class, new ArmorData.Deserializer())
+            .registerTypeAdapter(ArmorData.class, new ArmorData.Deserializer())
             .setPrettyPrinting()
             .create();
     private static ArmorDataManager INSTANCE;
@@ -74,7 +74,7 @@ public class ArmorDataManager extends SimplePreparableReloadListener<Map<Resourc
     }
 
     /**
-     * 这个类只是用来注明ArmorData应该由数据包读取而部署手动构造
+     * 这个类只是用来注明ArmorData应该由数据包读取而不是手动构造
      */
     public static class ArmorDataSupplier implements Supplier<ArmorData> {
         private final ArmorData armorData;
