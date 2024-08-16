@@ -1,4 +1,4 @@
-package me.xjqsh.lesraisinsarmor.client.resource.armor;
+package me.xjqsh.lesraisinsarmor.client.resource.data;
 
 public class ArmorRenderConfig {
     public ArmorPartRenderConfig helmet;

@@ -35,8 +35,7 @@ public class ModItems {
         for (ArmorItem.Type slotType : ArmorItem.Type.values()){
             String slotName = slotType.getName();
             REGISTER.register(name + "_" + slotName,
-                    ()->new LrArmorItem(name, material, slotType,
-                            (new Item.Properties()),null));
+                    ()->new LrArmorItem(name, slotType, new Item.Properties(),null));
         }
     }
 
@@ -44,8 +43,7 @@ public class ModItems {
         for (ArmorItem.Type slotType : ArmorItem.Type.values()){
             String slotName = slotType.getName();
             REGISTER.register(name + "_" + slotName,
-                    ()->new LrArmorItem(name, LrArmorMaterial.getByName(name), slotType,
-                            (new Item.Properties()),null));
+                    ()->new LrArmorItem(name, slotType, new Item.Properties(),null));
         }
     }
 
@@ -53,8 +51,7 @@ public class ModItems {
         for (ArmorItem.Type slotType : ArmorItem.Type.values()){
             String slotName = slotType.getName();
             REGISTER.register(name + "_" + slotName,
-                    ()->new LrArmorItem(name,LrArmorMaterial.getByName(name), slotType,
-                            (new Item.Properties()),supplier));
+                    ()->new LrArmorItem(name, slotType, new Item.Properties(),supplier));
         }
     }
 

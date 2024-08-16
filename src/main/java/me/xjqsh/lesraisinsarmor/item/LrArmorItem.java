@@ -2,8 +2,12 @@ package me.xjqsh.lesraisinsarmor.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import me.xjqsh.lesraisinsarmor.armor.LrArmorMaterial;
 import me.xjqsh.lesraisinsarmor.client.renderer.BedrockArmorRenderer;
 import me.xjqsh.lesraisinsarmor.config.CommonConfig;
+import me.xjqsh.lesraisinsarmor.resource.ArmorDataManager.ArmorDataSupplier;
+import me.xjqsh.lesraisinsarmor.resource.data.ArmorData;
+import me.xjqsh.lesraisinsarmor.resource.data.ArmorPartData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -17,7 +21,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,9 +50,10 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private final String suitIdf;
     private final @Nullable Supplier<MobEffect> suitEffect;
+    private ArmorData armorData;
 
-    public LrArmorItem(String suitIdf, ArmorMaterial armorMaterial, ArmorItem.Type slot, Item.Properties properties, @Nullable Supplier<MobEffect> suitEffect) {
-        super(armorMaterial, slot, properties);
+    public LrArmorItem(String suitIdf, ArmorItem.Type slot, Item.Properties properties, @Nullable Supplier<MobEffect> suitEffect) {
+        super(LrArmorMaterial.DEFAULT, slot, properties);
         this.suitIdf = suitIdf;
         this.suitEffect = suitEffect;
     }
@@ -53,25 +61,44 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
         return suitIdf;
     }
 
+    public void setArmorData(ArmorDataSupplier supplier){
+        this.armorData = supplier.get();
+    }
+
     @Override
     public int getDefense() {
-        if(CommonConfig.enableArmorAttribute.get()){
-            return super.getDefense();
-        }
-        return 0;
+        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getDefense);
     }
 
     @Override
     public float getToughness() {
-        if(CommonConfig.enableArmorAttribute.get()){
-            return super.getToughness();
-        }
-        return 0;
+        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getToughness);
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return 20;
+        return ArmorData.getByType(this.armorData, this.type, 128, ArmorPartData::getMaxDurability);
+    }
+
+    @Override
+    public int getEnchantmentValue() {
+        return ArmorData.getByType(this.armorData, this.type, 5, ArmorPartData::getEnchantmentValue);
+    }
+
+    @Override
+    public boolean isValidRepairItem(@NotNull ItemStack pToRepair, @NotNull ItemStack pRepair) {
+        var ingredient = ArmorData.getByType(this.armorData, this.type, null, ArmorPartData::getRepairIngredient);
+        if (ingredient != null) {
+            ingredient.test(pRepair);
+        }
+        return false;
+    }
+
+    @Override
+    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
+        return CommonConfig.enableArmorAttribute.get() ?
+                ArmorData.getByType(this.armorData, this.type, ImmutableMultimap.of(), ArmorPartData::getAttributes) :
+                ImmutableMultimap.of();
     }
 
     @Override
@@ -102,11 +129,6 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
-    }
-
-    @Override
-    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
-        return CommonConfig.enableArmorAttribute.get() ? super.getDefaultAttributeModifiers(pEquipmentSlot) : ImmutableMultimap.of();
     }
 
     @OnlyIn(Dist.CLIENT)

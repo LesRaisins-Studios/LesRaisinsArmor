@@ -1,4 +1,4 @@
-package me.xjqsh.lesraisinsarmor.client.resource.armor;
+package me.xjqsh.lesraisinsarmor.client.resource.data;
 
 import com.google.gson.annotations.SerializedName;
 

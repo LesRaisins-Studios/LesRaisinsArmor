@@ -2,9 +2,8 @@ package me.xjqsh.lesraisinsarmor.client;
 
 import me.xjqsh.lesraisinsarmor.LesRaisinsArmor;
 import me.xjqsh.lesraisinsarmor.client.resource.ArmorRenderConfigManager;
-import me.xjqsh.lesraisinsarmor.client.resource.armor.ArmorPartRenderConfig;
-import me.xjqsh.lesraisinsarmor.client.resource.armor.ArmorRenderConfig;
-import me.xjqsh.lesraisinsarmor.client.resource.armor.PlayerModelPart;
+import me.xjqsh.lesraisinsarmor.client.resource.data.ArmorPartRenderConfig;
+import me.xjqsh.lesraisinsarmor.client.resource.data.ArmorRenderConfig;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;

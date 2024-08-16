@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import me.xjqsh.lesraisinsarmor.LesRaisinsArmor;
-import me.xjqsh.lesraisinsarmor.client.resource.armor.ArmorRenderConfig;
+import me.xjqsh.lesraisinsarmor.client.resource.data.ArmorRenderConfig;
 import me.xjqsh.lesraisinsarmor.util.LocUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
