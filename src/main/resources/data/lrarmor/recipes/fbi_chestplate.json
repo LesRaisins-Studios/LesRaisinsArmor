@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["S S",
+                "YBS",
+                "STS"],
+    "key": {
+        "T":{
+            "tag": "forge:ingots/iron"
+        },
+        "S":{
+            "tag": "forge:leather"
+        },
+        "B":{
+            "tag": "forge:dyes/blue"
+        },
+        "Y":{
+            "tag": "forge:dyes/yellow"
+        }
+    },
+    "result": {
+        "item": "lrarmor:fbi_chestplate"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["TTT",
+                "SBS",
+                " S "],
+    "key": {
+        "B":{
+            "tag": "forge:dyes/yellow"
+        },
+        "T":{
+            "tag": "forge:ingots/iron"
+        },
+        "S":{
+            "tag": "forge:string"
+        }
+    },
+    "result": {
+        "item": "lrarmor:fbi_armed_helmet"
+    }
+}

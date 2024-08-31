@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["TBT",
+                "D D",
+                "T T"],
+    "key": {
+        "T":{
+            "tag": "forge:ingots/iron"
+        },
+        "B":{
+            "tag": "forge:storage_blocks/iron"
+        },
+        "D":{
+            "tag": "forge:gems/diamond"
+        }
+    },
+    "result": {
+        "item": "lrarmor:defender_leggings"
+    }
+}

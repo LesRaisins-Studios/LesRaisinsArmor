@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["S S",
+                "TTT",
+                "SXS"],
+    "key": {
+        "S":{
+            "tag": "forge:leather"
+        },
+        "X":{
+            "tag": "forge:dyes/white"
+        },
+        "T":{
+            "tag": "forge:ingots/iron"
+        }
+    },
+    "result": {
+        "item": "lrarmor:joker_armed_chestplate"
+    }
+}

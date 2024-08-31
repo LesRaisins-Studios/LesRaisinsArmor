@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["STS"],
+    "key": {
+        "T":{
+            "tag": "forge:ingots/iron"
+        },
+        "S":{
+            "tag": "forge:glass/black"
+        }
+    },
+    "result": {
+        "item": "lrarmor:irs_helmet"
+    }
+}

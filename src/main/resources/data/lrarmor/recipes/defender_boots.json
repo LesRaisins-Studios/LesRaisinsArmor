@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["S S",
+                "D D"],
+    "key": {
+        "S":{
+            "tag": "forge:leather"
+        },
+        "D":{
+            "tag": "forge:gems/diamond"
+        }
+    },
+    "result": {
+        "item": "lrarmor:defender_boots"
+    }
+}

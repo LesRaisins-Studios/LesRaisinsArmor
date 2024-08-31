@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["SSS",
+                "SBT",
+                "S S"],
+    "key": {
+        "T":{
+            "tag": "forge:ingots/iron"
+        },
+        "S":{
+            "tag": "forge:leather"
+        },
+        "B":{
+            "tag": "forge:dyes/yellow"
+        }
+    },
+    "result": {
+        "item": "lrarmor:fbi_armed_leggings"
+    }
+}

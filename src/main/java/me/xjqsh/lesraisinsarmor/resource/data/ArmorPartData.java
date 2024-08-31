@@ -1,10 +1,10 @@
 package me.xjqsh.lesraisinsarmor.resource.data;
 
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -23,6 +23,7 @@ public class ArmorPartData {
     private int maxDurability;
     private int defense = 0;
     private int toughness = 0;
+    private int knockbackResistance = 0;
 
     public Multimap<Attribute, AttributeModifier> getAttributes() {
         return attributes;
@@ -52,6 +53,10 @@ public class ArmorPartData {
         return toughness;
     }
 
+    public int getKnockbackResistance() {
+        return knockbackResistance;
+    }
+
     public static ArmorPartData fromJson(UUID uuid, ArmorPartData.Struct rawData) {
         ArmorPartData data = new ArmorPartData();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = new ImmutableMultimap.Builder<>();
@@ -64,12 +69,15 @@ public class ArmorPartData {
                     rawData.knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
         data.attributes = builder.build();
-        data.repairIngredient = CraftingHelper.getIngredient(rawData.repairIngredient, true);
+        try {
+            data.repairIngredient = CraftingHelper.getIngredient(rawData.repairIngredient, true);
+        } catch (JsonParseException ignore) {}
         data.equipSound = SoundEvent.createVariableRangeEvent(rawData.sound);
         data.enchantmentValue = rawData.enchantmentValue;
         data.maxDurability = rawData.maxDurability;
         data.defense = rawData.defense;
         data.toughness = rawData.toughness;
+        data.knockbackResistance = rawData.knockbackResistance;
 
         return data;
     }
@@ -81,6 +89,6 @@ public class ArmorPartData {
         private int enchantmentValue = 5;
         private int maxDurability = 128;
         private ResourceLocation sound = new ResourceLocation("item.armor.equip_leather");
-        private JsonObject repairIngredient = null;
+        private JsonElement repairIngredient = null;
     }
 }

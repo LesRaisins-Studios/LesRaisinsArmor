@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["TTT",
+                "S S",
+                " S "],
+    "key": {
+        "T":{
+            "tag": "forge:ingots/iron"
+        },
+        "S":{
+            "tag": "forge:string"
+        }
+    },
+    "result": {
+        "item": "lrarmor:dea_armed_helmet"
+    }
+}

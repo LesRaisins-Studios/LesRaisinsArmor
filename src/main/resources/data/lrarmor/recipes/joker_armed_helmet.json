@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["TTT",
+                "T T",
+                " T "],
+    "key": {
+        "T":{
+            "tag": "forge:ingots/iron"
+        }
+    },
+    "result": {
+        "item": "lrarmor:joker_armed_helmet"
+    }
+}

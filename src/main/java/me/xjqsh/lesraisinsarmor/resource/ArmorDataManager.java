@@ -10,12 +10,17 @@ import me.xjqsh.lesraisinsarmor.util.LocUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -34,6 +39,11 @@ public class ArmorDataManager extends SimplePreparableReloadListener<Map<Resourc
         }
         return INSTANCE;
     }
+    private Map<ResourceLocation, String> networkCache;
+
+    public Map<ResourceLocation, String> getNetworkCache() {
+        return networkCache;
+    }
 
     @NotNull
     @Override
@@ -45,17 +55,21 @@ public class ArmorDataManager extends SimplePreparableReloadListener<Map<Resourc
     @Override
     protected Map<ResourceLocation, ArmorData> prepare(@NotNull ResourceManager manager, @NotNull ProfilerFiller pProfiler) {
         ImmutableMap.Builder<ResourceLocation, ArmorData> builder = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<ResourceLocation, String> cache = new ImmutableMap.Builder<>();
         manager.listResources("armor_data", FILTER).forEach((rl, resource) -> {
-            try(var reader = resource.openAsReader()) {
-                ResourceLocation configLocation = LocUtil.fromFile(rl);
-                var config = GSON.fromJson(reader, ArmorData.class);
+            try(var reader = resource.open()) {
+                ResourceLocation configLocation = LocUtil.fromFile(rl, "armor_data");
+                String json = IOUtils.toString(reader, StandardCharsets.UTF_8);
+                var config = GSON.fromJson(json, ArmorData.class);
                 if (config != null && configLocation != null) {
                     builder.put(configLocation, config);
+                    cache.put(configLocation, json);
                 }
             }  catch (IOException | JsonSyntaxException | JsonIOException e) {
                 LesRaisinsArmor.LOGGER.warn("Failed to load armor config {}!", rl, e);
             }
         });
+        networkCache = cache.build();
         return builder.build();
     }
 
@@ -69,6 +83,26 @@ public class ArmorDataManager extends SimplePreparableReloadListener<Map<Resourc
                 if(ForgeRegistries.ITEMS.getValue(rl) instanceof LrArmorItem item) {
                     item.setArmorData(new ArmorDataSupplier(entry.getValue()));
                 }
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void fromNetwork(Map<ResourceLocation, String> networkCache) {
+        for (var entry : networkCache.entrySet()) {
+            try {
+                ArmorData armorData = GSON.fromJson(entry.getValue(), ArmorData.class);
+                if (armorData == null) continue;
+                for (ArmorItem.Type type : ArmorItem.Type.values()) {
+                    ResourceLocation rl = ResourceLocation.tryBuild(entry.getKey().getNamespace(),
+                            entry.getKey().getPath() + "_" + type.getName());
+                    if (rl == null) continue;
+                    if(ForgeRegistries.ITEMS.getValue(rl) instanceof LrArmorItem item) {
+                        item.setArmorData(new ArmorDataSupplier(armorData));
+                    }
+                }
+            } catch (JsonSyntaxException e) {
+                LesRaisinsArmor.LOGGER.warn("Failed to load armor config from network {}!", entry.getKey(), e);
             }
         }
     }

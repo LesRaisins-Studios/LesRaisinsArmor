@@ -29,6 +29,7 @@ public class ModItems {
         registerInBatch("irs");
         registerInBatch("fbi");
         registerInBatch("fbi_armed");
+        registerInBatch("joker");
         registerSingle(ArmorItem.Type.HELMET, "joker_armed");
         registerSingle(ArmorItem.Type.CHESTPLATE, "joker_armed");
     }

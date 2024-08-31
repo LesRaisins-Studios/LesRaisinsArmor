@@ -2,6 +2,7 @@ package me.xjqsh.lesraisinsarmor.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import me.xjqsh.lesraisinsarmor.armor.AbstractArmorMaterial;
 import me.xjqsh.lesraisinsarmor.armor.LrArmorMaterial;
 import me.xjqsh.lesraisinsarmor.client.renderer.BedrockArmorRenderer;
 import me.xjqsh.lesraisinsarmor.config.CommonConfig;
@@ -13,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -21,10 +24,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,6 +52,12 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     private final String suitIdf;
     private final @Nullable Supplier<MobEffect> suitEffect;
     private ArmorData armorData;
+    private ArmorMaterial material;
+
+    @Override
+    public Rarity getRarity(ItemStack pStack) {
+        return super.getRarity(pStack);
+    }
 
     public LrArmorItem(String suitIdf, ArmorItem.Type slot, Item.Properties properties, @Nullable Supplier<MobEffect> suitEffect) {
         super(LrArmorMaterial.DEFAULT, slot, properties);
@@ -63,6 +70,13 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
 
     public void setArmorData(ArmorDataSupplier supplier){
         this.armorData = supplier.get();
+        this.material = new AbstractArmorMaterial(this);
+    }
+
+    @NotNull
+    @Override
+    public ArmorMaterial getMaterial() {
+        return material==null ? super.getMaterial() : material;
     }
 
     @Override
@@ -77,7 +91,15 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return ArmorData.getByType(this.armorData, this.type, 128, ArmorPartData::getMaxDurability);
+        return getMaxDurability();
+    }
+
+    public int getMaxDurability() {
+        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getMaxDurability);
+    }
+
+    public int getKnockbackResistance() {
+        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getKnockbackResistance);
     }
 
     @Override
@@ -86,17 +108,36 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     }
 
     @Override
+    public boolean isDamageable(ItemStack stack) {
+        return getMaxDamage(stack) > 0;
+    }
+
+    public boolean canBeDepleted() {
+        return getMaxDurability() > 0;
+    }
+
+    @Override
+    public @NotNull SoundEvent getEquipSound() {
+        return ArmorData.getByType(this.armorData, this.type, SoundEvents.ARMOR_EQUIP_LEATHER, ArmorPartData::getEquipSound);
+    }
+
+    @Override
     public boolean isValidRepairItem(@NotNull ItemStack pToRepair, @NotNull ItemStack pRepair) {
-        var ingredient = ArmorData.getByType(this.armorData, this.type, null, ArmorPartData::getRepairIngredient);
+        Ingredient ingredient = getIngredient();
         if (ingredient != null) {
-            ingredient.test(pRepair);
+            return ingredient.test(pRepair);
         }
         return false;
     }
 
+    @Nullable
+    public Ingredient getIngredient() {
+        return ArmorData.getByType(this.armorData, this.type, null, ArmorPartData::getRepairIngredient);
+    }
+
     @Override
     public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
-        return CommonConfig.enableArmorAttribute.get() ?
+        return CommonConfig.enableArmorAttribute.get() && pEquipmentSlot == this.type.getSlot() ?
                 ArmorData.getByType(this.armorData, this.type, ImmutableMultimap.of(), ArmorPartData::getAttributes) :
                 ImmutableMultimap.of();
     }
@@ -138,7 +179,7 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
             Player player = Minecraft.getInstance().player;
             Component title = Component.translatable("tooltip.lramrmor.suit",
                     Component.translatable("suit.lrarmor." + this.suitIdf),
-                    Component.literal(String.format("(%d/4)",getSuitCount(player, stack)))
+                    Component.literal(String.format("(%d/4)", getSuitCount(player, stack)))
             ).withStyle(ChatFormatting.GRAY);
             list.add(title);
 

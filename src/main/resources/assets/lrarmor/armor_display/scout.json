@@ -1,7 +1,7 @@
 {
 	"helmet": {
 		"hideParts": [
-			"head", "hat"
+			"hat"
 		]
 	},
 	"chestplate": {

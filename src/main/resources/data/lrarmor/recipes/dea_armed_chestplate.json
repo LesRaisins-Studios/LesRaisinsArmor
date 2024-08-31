@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["S S",
+                "TKT",
+                "TDT"],
+    "key": {
+        "T":{
+            "tag": "forge:ingots/iron"
+        },
+        "S":{
+            "tag": "forge:leather"
+        },
+        "D":{
+            "tag": "forge:gems/diamond"
+        },
+        "K":{
+            "tag": "minecraft:terracotta"
+        }
+    },
+    "result": {
+        "item": "lrarmor:dea_armed_chestplate"
+    }
+}

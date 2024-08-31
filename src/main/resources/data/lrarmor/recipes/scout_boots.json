@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["S S",
+                "T T",
+                "W W"],
+    "key": {
+        "S":{
+            "tag": "forge:leather"
+        },
+        "W":{
+            "tag": "minecraft:wool"
+        },
+        "T":{
+            "tag": "forge:ingots/iron"
+        }
+    },
+    "result": {
+        "item": "lrarmor:scout_boots"
+    }
+}

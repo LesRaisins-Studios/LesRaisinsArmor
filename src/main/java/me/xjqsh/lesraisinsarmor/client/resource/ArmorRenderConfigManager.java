@@ -39,7 +39,7 @@ public class ArmorRenderConfigManager implements ResourceManagerReloadListener {
         ImmutableMap.Builder<ResourceLocation, ArmorRenderConfig> builder = new ImmutableMap.Builder<>();
         manager.listResources("armor_display", FILTER).forEach((rl,resource) -> {
             try(var reader = resource.openAsReader()) {
-                ResourceLocation configLocation = LocUtil.fromFile(rl);
+                ResourceLocation configLocation = LocUtil.fromFile(rl, "armor_display");
                 var config = GSON.fromJson(reader, ArmorRenderConfig.class);
                 if (config != null && configLocation != null) {
                     builder.put(configLocation, config);

@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "equipment",
+    "pattern": ["WSW",
+                "T T",
+                "S S"],
+    "key": {
+        "S":{
+            "tag": "forge:leather"
+        },
+        "W":{
+            "tag": "minecraft:wool"
+        },
+        "T":{
+            "tag": "forge:ingots/iron"
+        }
+    },
+    "result": {
+        "item": "lrarmor:sniper_leggings"
+    }
+}
