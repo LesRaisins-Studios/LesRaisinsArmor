@@ -7,31 +7,35 @@ import me.xjqsh.lesraisinsarmor.client.resource.data.ArmorRenderConfig;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.client.forgeevent.PrepareModelEvent;
+import yesman.epicfight.api.client.model.AnimatedMesh;
 import yesman.epicfight.client.mesh.HumanoidMesh;
 
 public class EpicFightCompat {
     public static void init(){
+        LesRaisinsArmor.LOGGER.info("Setup EpicFight Compat");
         MinecraftForge.EVENT_BUS.register(new EpicFightCompat());
     }
 
     @SubscribeEvent
     public void pre(PrepareModelEvent event) {
         if(event.getMesh() instanceof HumanoidMesh mesh) {
-            if(event.getEntityPatch().getOriginal() instanceof Player player) {
-                resolveVisibleParts(player, EquipmentSlot.HEAD, mesh);
-                resolveVisibleParts(player, EquipmentSlot.CHEST, mesh);
-                resolveVisibleParts(player, EquipmentSlot.LEGS, mesh);
-                resolveVisibleParts(player, EquipmentSlot.FEET, mesh);
+            LivingEntity living = event.getEntityPatch().getOriginal();
+            if(living != null) {
+                resolveVisibleParts(living, EquipmentSlot.HEAD, mesh);
+                resolveVisibleParts(living, EquipmentSlot.CHEST, mesh);
+                resolveVisibleParts(living, EquipmentSlot.LEGS, mesh);
+                resolveVisibleParts(living, EquipmentSlot.FEET, mesh);
             }
         }
     }
 
-    private static void resolveVisibleParts(Player player, EquipmentSlot slot, HumanoidMesh model) {
+    private static void resolveVisibleParts(LivingEntity player, EquipmentSlot slot, HumanoidMesh model) {
         Item item = player.getItemBySlot(slot).getItem();
         if(item instanceof LrArmorItem lrArmor){
             ArmorRenderConfig config = getConfig(lrArmor);
@@ -49,19 +53,25 @@ public class EpicFightCompat {
         if (config == null) return;
         for (var part : config.hideParts) {
             switch (part){
-                case HEAD -> model.head.setHidden(true);
-                case HAT -> model.hat.setHidden(true);
-                case BODY -> model.torso.setHidden(true);
-                case JACKET -> model.jacket.setHidden(true);
-                case RIGHT_ARM -> model.rightArm.setHidden(true);
-                case RIGHT_SLEEVE -> model.rightSleeve.setHidden(true);
-                case LEFT_ARM -> model.leftArm.setHidden(true);
-                case LEFT_SLEEVE -> model.leftSleeve.setHidden(true);
-                case RIGHT_LEG -> model.rightLeg.setHidden(true);
-                case RIGHT_PANTS -> model.rightPants.setHidden(true);
-                case LEFT_LEG -> model.leftLeg.setHidden(true);
-                case LEFT_PANTS -> model.leftPants.setHidden(true);
+                case HEAD -> setHidden(model.head);
+                case HAT -> setHidden(model.hat);
+                case BODY -> setHidden(model.torso);
+                case LEFT_ARM -> setHidden(model.leftArm);
+                case RIGHT_ARM -> setHidden(model.rightArm);
+                case LEFT_LEG -> setHidden(model.leftLeg);
+                case RIGHT_LEG -> setHidden(model.rightLeg);
+                case JACKET -> setHidden(model.jacket);
+                case LEFT_SLEEVE -> setHidden(model.leftSleeve);
+                case RIGHT_SLEEVE -> setHidden(model.rightSleeve);
+                case LEFT_PANTS -> setHidden(model.leftPants);
+                case RIGHT_PANTS -> setHidden(model.rightPants);
             }
+        }
+    }
+
+    private static void setHidden(@Nullable AnimatedMesh.AnimatedModelPart part) {
+        if (part != null) {
+            part.setHidden(true);
         }
     }
 
