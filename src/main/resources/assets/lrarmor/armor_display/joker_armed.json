@@ -7,7 +7,7 @@
 	"chestplate": {
 		"hideParts": [
 			"left_arm", "left_sleeve",
-			"right_arm", "right_sleeve"
+			"right_arm", "right_sleeve", "body"
 		]
 	},
 	"leggings": {

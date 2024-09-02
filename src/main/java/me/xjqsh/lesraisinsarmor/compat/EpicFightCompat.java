@@ -11,6 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.client.forgeevent.PrepareModelEvent;
 import yesman.epicfight.api.client.model.AnimatedMesh;
@@ -18,8 +19,10 @@ import yesman.epicfight.client.mesh.HumanoidMesh;
 
 public class EpicFightCompat {
     public static void init(){
-        LesRaisinsArmor.LOGGER.info("Setup EpicFight Compat");
-        MinecraftForge.EVENT_BUS.register(new EpicFightCompat());
+        if (FMLEnvironment.dist.isClient()) {
+            LesRaisinsArmor.LOGGER.info("Setup EpicFight Compat");
+            MinecraftForge.EVENT_BUS.register(new EpicFightCompat());
+        }
     }
 
     @SubscribeEvent
