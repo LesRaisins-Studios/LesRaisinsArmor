@@ -86,7 +86,7 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
 
     @Override
     public float getToughness() {
-        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getToughness);
+        return ArmorData.getByType(this.armorData, this.type, 0f, ArmorPartData::getToughness);
     }
 
     @Override
@@ -98,8 +98,8 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
         return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getMaxDurability);
     }
 
-    public int getKnockbackResistance() {
-        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getKnockbackResistance);
+    public float getKnockbackResistance() {
+        return ArmorData.getByType(this.armorData, this.type, 0f, ArmorPartData::getKnockbackResistance);
     }
 
     @Override

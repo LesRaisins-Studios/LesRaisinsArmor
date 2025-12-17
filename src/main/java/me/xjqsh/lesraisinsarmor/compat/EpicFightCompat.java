@@ -14,7 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.client.forgeevent.PrepareModelEvent;
-import yesman.epicfight.api.client.model.AnimatedMesh;
+import yesman.epicfight.api.client.model.SkinnedMesh;
 import yesman.epicfight.client.mesh.HumanoidMesh;
 
 public class EpicFightCompat {
@@ -72,7 +72,7 @@ public class EpicFightCompat {
         }
     }
 
-    private static void setHidden(@Nullable AnimatedMesh.AnimatedModelPart part) {
+    private static void setHidden(@Nullable SkinnedMesh.SkinnedMeshPart part) {
         if (part != null) {
             part.setHidden(true);
         }

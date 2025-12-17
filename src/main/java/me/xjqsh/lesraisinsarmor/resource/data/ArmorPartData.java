@@ -22,8 +22,8 @@ public class ArmorPartData {
     private int enchantmentValue;
     private int maxDurability;
     private int defense = 0;
-    private int toughness = 0;
-    private int knockbackResistance = 0;
+    private float toughness = 0;
+    private float knockbackResistance = 0;
 
     public Multimap<Attribute, AttributeModifier> getAttributes() {
         return attributes;
@@ -49,11 +49,11 @@ public class ArmorPartData {
         return defense;
     }
 
-    public int getToughness() {
+    public float getToughness() {
         return toughness;
     }
 
-    public int getKnockbackResistance() {
+    public float getKnockbackResistance() {
         return knockbackResistance;
     }
 
