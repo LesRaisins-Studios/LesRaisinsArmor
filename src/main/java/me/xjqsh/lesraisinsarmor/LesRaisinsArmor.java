@@ -9,7 +9,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -23,16 +22,8 @@ public class LesRaisinsArmor {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.init());
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        bus.addListener(this::onClientSetup);
-
         ModItems.REGISTER.register(bus);
         ModEffects.REGISTER.register(bus);
         ModCreativeTabs.TABS.register(bus);
-    }
-
-    private void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-//            GeoArmorRenderer.registerArmorRenderer(LrArmorItem.class, BedrockArmorRenderer::new);
-        });
     }
 }

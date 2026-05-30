@@ -1,10 +1,12 @@
 package me.xjqsh.lesraisinsarmor.item;
 
+import com.github.mcmodderanchor.simplebedrockmodel.v1.client.model.BedrockArmorModel;
+import com.github.mcmodderanchor.simplebedrockmodel.v1.client.renderer.GeoArmorRenderer;
+import com.github.mcmodderanchor.simplebedrockmodel.v1.resource.BedrockModelResourceSet;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import me.xjqsh.lesraisinsarmor.armor.AbstractArmorMaterial;
 import me.xjqsh.lesraisinsarmor.armor.LrArmorMaterial;
-import me.xjqsh.lesraisinsarmor.client.renderer.BedrockArmorRenderer;
 import me.xjqsh.lesraisinsarmor.config.CommonConfig;
 import me.xjqsh.lesraisinsarmor.resource.ArmorDataManager.ArmorDataSupplier;
 import me.xjqsh.lesraisinsarmor.resource.data.ArmorData;
@@ -14,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
@@ -31,14 +34,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.constant.DefaultAnimations;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,8 +42,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 
-public class LrArmorItem extends ArmorItem implements GeoItem {
-    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+public class LrArmorItem extends ArmorItem {
     private final String suitIdf;
     private final @Nullable Supplier<MobEffect> suitEffect;
     private ArmorData armorData;
@@ -145,31 +139,26 @@ public class LrArmorItem extends ArmorItem implements GeoItem {
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
-            private GeoArmorRenderer<?> renderer;
+            private GeoArmorRenderer renderer;
 
             @Override
             public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
-                if (this.renderer == null)
-                    this.renderer = new BedrockArmorRenderer(getSuitIdf());
+                if (this.renderer == null) {
+                    BedrockArmorModel model = (BedrockArmorModel) BedrockModelResourceSet.getInstance()
+                            .getModel(new ResourceLocation("lrarmor", getSuitIdf() + ".geo"));
+                    if (model == null) {
+                        return original;
+                    }
+                    ResourceLocation texture = new ResourceLocation("lrarmor",
+                            "textures/item/armor/" + getSuitIdf() + ".png");
+                    this.renderer = new GeoArmorRenderer(model, texture);
+                }
 
-                this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
+                this.renderer.preparePose(livingEntity, itemStack, equipmentSlot, original);
 
                 return this.renderer;
             }
         });
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, 20, state -> {
-            state.setAnimation(DefaultAnimations.IDLE);
-            return PlayState.CONTINUE;
-        }));
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 
     @OnlyIn(Dist.CLIENT)

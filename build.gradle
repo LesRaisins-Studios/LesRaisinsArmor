@@ -84,15 +84,6 @@ repositories {
     }
 
     maven {
-        name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroupByRegex("software\\.bernie.*")
-            includeGroup("com.eliotlash.mclib")
-        }
-    }
-
-    maven {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
     }
@@ -107,19 +98,32 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.mcmodderanchor"
+        }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
-    implementation("com.eliotlash.mclib:mclib:20")
     implementation fg.deobf('curse.maven:timeless-and-classics-zero-1028108:5529117-sources-5529578')
+
+    // SBM
+    jarJar(implementation(fg.deobf("com.github.mcmodderanchor:simplebedrockmodel:2.3.3-forge-mc1.20.1"))) {
+        jarJar.ranged(it, "[2.3.3,)")
+    }
+    compileOnly("com.maydaymemory:mae:1.1.2") {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'it.unimi.dsi', module: 'fastutil'
+        exclude group: 'org.joml', module: 'joml'
+    }
 
 //    compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:5655318")
     compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:7316952")
-    compileOnly fg.deobf("curse.maven:easy-npc-559312:5672284")
+//    compileOnly fg.deobf("curse.maven:easy-npc-559312:5672284")
     compileOnly fg.deobf("curse.maven:parcool-482378:6652972")
 
     // compile against the JEI API but do not include it at runtime
