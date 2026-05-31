@@ -79,11 +79,7 @@ public class SuitEffect extends MobEffect {
                                                @Nonnull EffectRenderingInventoryScreen<?> screen,
                                                @Nonnull GuiGraphics guiGraphics,
                                                int x, int y, int blitOffset) {
-                Component text = Component.translatable("effect.lrarmor.suit_set",
-                        Component.translatable("suit.lrarmor." + suitIdf));
-                guiGraphics.drawString(screen.getMinecraft().font, text,
-                        x + 10 + 18, y + 6, 0xAAAAAA);
-                return true;
+                return false;
             }
         });
     }

@@ -5,6 +5,7 @@ import me.xjqsh.lesraisinsarmor.config.CommonConfig;
 import me.xjqsh.lesraisinsarmor.init.ModCreativeTabs;
 import me.xjqsh.lesraisinsarmor.init.ModEffects;
 import me.xjqsh.lesraisinsarmor.init.ModItems;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +19,7 @@ public class LesRaisinsArmor {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MOD_ID = "lrarmor";
 
+    @SuppressWarnings("removal")
     public LesRaisinsArmor(){
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.init());
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -25,5 +27,10 @@ public class LesRaisinsArmor {
         ModItems.REGISTER.register(bus);
         ModEffects.REGISTER.register(bus);
         ModCreativeTabs.TABS.register(bus);
+    }
+
+    @SuppressWarnings("removal")
+    public static ResourceLocation modLoc(String path){
+        return new ResourceLocation(MOD_ID, path);
     }
 }

@@ -25,7 +25,7 @@ public class ModResourceLoader {
     public static void onModelRegister(RegisterBedrockModelEvent event) {
         for (String suitId : SUIT_IDS) {
             event.register(
-                    new ResourceLocation(LesRaisinsArmor.MOD_ID, suitId + ".geo"),
+                    LesRaisinsArmor.modLoc(suitId + ".geo"),
                     RawResourceLoaders.COMMON_LOADER,
                     BedrockArmorModel::new
             );

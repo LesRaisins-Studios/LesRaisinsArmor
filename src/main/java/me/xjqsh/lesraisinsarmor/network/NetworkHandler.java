@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class NetworkHandler {
     private static final String VERSION = "0.1.0";
-    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(LesRaisinsArmor.MOD_ID, "network"),
+    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(LesRaisinsArmor.modLoc("network"),
             () -> VERSION, it -> it.equals(VERSION), it -> it.equals(VERSION));
 
     private static final AtomicInteger ID_COUNT = new AtomicInteger(1);
