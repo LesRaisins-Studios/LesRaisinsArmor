@@ -1,8 +1,10 @@
 package me.xjqsh.lesraisinsarmor.handler;
 
 import me.xjqsh.lesraisinsarmor.config.CommonConfig;
+import me.xjqsh.lesraisinsarmor.effect.SuitEffect;
 import me.xjqsh.lesraisinsarmor.init.ModEffects;
 import me.xjqsh.lesraisinsarmor.item.LrArmorItem;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -24,15 +26,28 @@ public class SuitHandler {
         if(event.player.level().isClientSide()) return;
         if(event.player.tickCount % 10 != 0) return;
 
-        Item item = event.player.getItemBySlot(EquipmentSlot.CHEST).getItem();
+        Player player = event.player;
+        Item item = player.getItemBySlot(EquipmentSlot.CHEST).getItem();
+
         if (item instanceof LrArmorItem armorItem) {
-            if(armorItem.getSuitCount(event.player)==4){
+            if(armorItem.getSuitCount(player)==4){
+                // 套装完整：应用效果
                 if("medical".equals(armorItem.getSuitIdf())){
-                    if(event.player.getEffect(ModEffects.RESCUE_COOLDOWN.get())==null){
-                        armorItem.applyEffect(event.player);
+                    if(player.getEffect(ModEffects.RESCUE_COOLDOWN.get())==null){
+                        armorItem.applyEffect(player);
                     }
                 }else {
-                    armorItem.applyEffect(event.player);
+                    armorItem.applyEffect(player);
+                }
+            } else {
+                // 套装不完整：移除该套装的效果
+                armorItem.removeEffect(player);
+            }
+        } else {
+            // 胸甲部位不是模组盔甲：移除所有套装效果
+            for (MobEffect effect : SuitEffect.getAllSuitEffects()) {
+                if (player.hasEffect(effect)) {
+                    player.removeEffect(effect);
                 }
             }
         }
@@ -52,7 +67,7 @@ public class SuitHandler {
         if(player.getHealth() - event.getAmount() < player.getMaxHealth()*0.3 && player.hasEffect(ModEffects.RESCUE.get())){
             player.removeEffect(ModEffects.RESCUE.get());
             player.addEffect(new MobEffectInstance(ModEffects.RESCUE_COOLDOWN.get(), 600));
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100,3));
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 3));
         }
     }
 }

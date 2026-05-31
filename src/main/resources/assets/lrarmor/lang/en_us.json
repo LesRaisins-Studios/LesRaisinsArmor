@@ -87,5 +87,6 @@
     "effect.lrarmor.heavy_armor": "Heavy Armor",
     "effect.lrarmor.light_leg": "Lightweight",
     "effect.lrarmor.rescue": "Self-Healing Device",
+    "effect.lrarmor.suit_set": "Set: %s",
     "tooltip.lramrmor.suit": "%s: %s"
 }

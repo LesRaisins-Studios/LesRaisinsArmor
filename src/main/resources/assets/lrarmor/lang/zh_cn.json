@@ -87,5 +87,6 @@
     "effect.lrarmor.heavy_armor": "超重型全身装甲",
     "effect.lrarmor.light_leg": "轻量化腿部支撑",
     "effect.lrarmor.rescue": "便携自愈设备",
+    "effect.lrarmor.suit_set": "套装：%s",
     "tooltip.lramrmor.suit": "%s: %s"
 }

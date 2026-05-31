@@ -1,6 +1,6 @@
 package me.xjqsh.lesraisinsarmor.network.s2c;
 
-import me.xjqsh.lesraisinsarmor.resource.ArmorDataManager;
+import me.xjqsh.lesraisinsarmor.resource.ArmorSuitManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,6 +33,6 @@ public class ArmorDataMessage {
 
     @OnlyIn(Dist.CLIENT)
     public static void onReceive(ArmorDataMessage message) {
-        ArmorDataManager.fromNetwork(message.networkCache);
+        ArmorSuitManager.fromNetwork(message.networkCache);
     }
 }

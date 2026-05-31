@@ -5,11 +5,12 @@ import com.github.mcmodderanchor.simplebedrockmodel.v1.client.renderer.GeoArmorR
 import com.github.mcmodderanchor.simplebedrockmodel.v1.resource.BedrockModelResourceSet;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import me.xjqsh.lesraisinsarmor.LesRaisinsArmor;
 import me.xjqsh.lesraisinsarmor.armor.AbstractArmorMaterial;
 import me.xjqsh.lesraisinsarmor.armor.LrArmorMaterial;
 import me.xjqsh.lesraisinsarmor.config.CommonConfig;
-import me.xjqsh.lesraisinsarmor.resource.ArmorDataManager.ArmorDataSupplier;
-import me.xjqsh.lesraisinsarmor.resource.data.ArmorData;
+import me.xjqsh.lesraisinsarmor.resource.ArmorSuitIndex;
+import me.xjqsh.lesraisinsarmor.resource.ArmorSuitManager;
 import me.xjqsh.lesraisinsarmor.resource.data.ArmorPartData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -45,7 +46,6 @@ import java.util.function.Supplier;
 public class LrArmorItem extends ArmorItem {
     private final String suitIdf;
     private final @Nullable Supplier<MobEffect> suitEffect;
-    private ArmorData armorData;
     private ArmorMaterial material;
 
     @Override
@@ -57,30 +57,58 @@ public class LrArmorItem extends ArmorItem {
         super(LrArmorMaterial.DEFAULT, slot, properties);
         this.suitIdf = suitIdf;
         this.suitEffect = suitEffect;
+        this.material = LrArmorMaterial.DEFAULT;
     }
+
     public String getSuitIdf() {
         return suitIdf;
     }
 
-    public void setArmorData(ArmorDataSupplier supplier){
-        this.armorData = supplier.get();
-        this.material = new AbstractArmorMaterial(this);
+    /**
+     * 从 ArmorSuitManager 动态获取当前套装的索引
+     * @return 套装索引，若数据未加载则返回 null
+     */
+    @Nullable
+    public ArmorSuitIndex getSuitIndex() {
+        return ArmorSuitManager.getInstance().getIndex(suitIdf);
+    }
+
+    /**
+     * 获取当前部位的 ArmorPartData
+     */
+    @Nullable
+    private ArmorPartData getPartData() {
+        ArmorSuitIndex index = getSuitIndex();
+        if (index != null) {
+            return index.getPartData(this.type);
+        }
+        return null;
     }
 
     @NotNull
     @Override
     public ArmorMaterial getMaterial() {
-        return material==null ? super.getMaterial() : material;
+        ArmorSuitIndex index = getSuitIndex();
+        if (index != null) {
+            // 确保 material 代理到当前物品
+            if (!(material instanceof AbstractArmorMaterial)) {
+                material = new AbstractArmorMaterial(this);
+            }
+            return material;
+        }
+        return super.getMaterial();
     }
 
     @Override
     public int getDefense() {
-        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getDefense);
+        ArmorPartData data = getPartData();
+        return data != null ? data.getDefense() : 0;
     }
 
     @Override
     public float getToughness() {
-        return ArmorData.getByType(this.armorData, this.type, 0f, ArmorPartData::getToughness);
+        ArmorPartData data = getPartData();
+        return data != null ? data.getToughness() : 0f;
     }
 
     @Override
@@ -89,16 +117,19 @@ public class LrArmorItem extends ArmorItem {
     }
 
     public int getMaxDurability() {
-        return ArmorData.getByType(this.armorData, this.type, 0, ArmorPartData::getMaxDurability);
+        ArmorPartData data = getPartData();
+        return data != null ? data.getMaxDurability() : 0;
     }
 
     public float getKnockbackResistance() {
-        return ArmorData.getByType(this.armorData, this.type, 0f, ArmorPartData::getKnockbackResistance);
+        ArmorPartData data = getPartData();
+        return data != null ? data.getKnockbackResistance() : 0f;
     }
 
     @Override
     public int getEnchantmentValue() {
-        return ArmorData.getByType(this.armorData, this.type, 5, ArmorPartData::getEnchantmentValue);
+        ArmorPartData data = getPartData();
+        return data != null ? data.getEnchantmentValue() : 5;
     }
 
     @Override
@@ -112,7 +143,8 @@ public class LrArmorItem extends ArmorItem {
 
     @Override
     public @NotNull SoundEvent getEquipSound() {
-        return ArmorData.getByType(this.armorData, this.type, SoundEvents.ARMOR_EQUIP_LEATHER, ArmorPartData::getEquipSound);
+        ArmorPartData data = getPartData();
+        return data != null ? data.getEquipSound() : SoundEvents.ARMOR_EQUIP_LEATHER;
     }
 
     @Override
@@ -126,14 +158,19 @@ public class LrArmorItem extends ArmorItem {
 
     @Nullable
     public Ingredient getIngredient() {
-        return ArmorData.getByType(this.armorData, this.type, null, ArmorPartData::getRepairIngredient);
+        ArmorPartData data = getPartData();
+        return data != null ? data.getRepairIngredient() : null;
     }
 
     @Override
     public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
-        return CommonConfig.enableArmorAttribute.get() && pEquipmentSlot == this.type.getSlot() ?
-                ArmorData.getByType(this.armorData, this.type, ImmutableMultimap.of(), ArmorPartData::getAttributes) :
-                ImmutableMultimap.of();
+        if (CommonConfig.enableArmorAttribute.get() && pEquipmentSlot == this.type.getSlot()) {
+            ArmorPartData data = getPartData();
+            if (data != null) {
+                return data.getAttributes();
+            }
+        }
+        return ImmutableMultimap.of();
     }
 
     @Override
@@ -145,11 +182,11 @@ public class LrArmorItem extends ArmorItem {
             public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
                 if (this.renderer == null) {
                     BedrockArmorModel model = (BedrockArmorModel) BedrockModelResourceSet.getInstance()
-                            .getModel(new ResourceLocation("lrarmor", getSuitIdf() + ".geo"));
+                            .getModel(ResourceLocation.tryBuild("lrarmor", getSuitIdf() + ".geo"));
                     if (model == null) {
                         return original;
                     }
-                    ResourceLocation texture = new ResourceLocation("lrarmor",
+                    ResourceLocation texture = ResourceLocation.tryBuild("lrarmor",
                             "textures/item/armor/" + getSuitIdf() + ".png");
                     this.renderer = new GeoArmorRenderer(model, texture);
                 }
@@ -193,16 +230,32 @@ public class LrArmorItem extends ArmorItem {
 
         }
     }
+
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return "lrarmor:textures/item/armor/" + this.suitIdf + ".png";
     }
 
+    /**
+     * 应用套装效果（无限时长，无倒计时显示）
+     * 效果的自动移除由 SuitHandler 处理
+     */
     public void applyEffect(Player player){
         if(suitEffect == null) return;
         MobEffect effect = suitEffect.get();
-        if(effect != null){
-            player.addEffect(new MobEffectInstance(effect, 250));
+        if(effect != null && !player.hasEffect(effect)){
+            player.addEffect(new MobEffectInstance(effect, -1));
+        }
+    }
+
+    /**
+     * 移除该套装的套装效果
+     */
+    public void removeEffect(Player player){
+        if(suitEffect == null) return;
+        MobEffect effect = suitEffect.get();
+        if(effect != null && player.hasEffect(effect)){
+            player.removeEffect(effect);
         }
     }
 
